@@ -1,0 +1,5 @@
+micronaut:
+    heartbeat:
+        enabled: false
+    application:
+        name: example
