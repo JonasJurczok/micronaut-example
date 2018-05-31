@@ -7,6 +7,7 @@ import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.runtime.server.EmbeddedServer;
@@ -64,9 +65,11 @@ public class JWTTest {
 
 	@Test
 	public void testAuthorized() throws ParseException {
+		BlockingHttpClient client = JWTTest.client.toBlocking();
+
 		UsernamePasswordCredentials creds = new UsernamePasswordCredentials("sherlock", "password");
 		HttpRequest request = HttpRequest.POST("/login", creds);
-		HttpResponse<BearerAccessRefreshToken> rsp = client.toBlocking().exchange(request, BearerAccessRefreshToken.class);
+		HttpResponse<BearerAccessRefreshToken> rsp = client.exchange(request, BearerAccessRefreshToken.class);
 
 		assertThat(rsp.getStatus(), is(HttpStatus.OK));
 		assertThat(rsp.body().getUsername(), is("sherlock"));
@@ -79,7 +82,7 @@ public class JWTTest {
 
 		String accessToken = rsp.body().getAccessToken();
 		HttpRequest requestWithAuthorization = HttpRequest.GET("/secure").header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
-		HttpResponse<String> response = client.toBlocking().exchange(requestWithAuthorization, String.class);
+		HttpResponse<String> response = client.exchange(requestWithAuthorization, String.class);
 
 		assertThat(response.getStatus(), is(HttpStatus.OK));
 		assertThat(response.body(), is("sherlock"));
