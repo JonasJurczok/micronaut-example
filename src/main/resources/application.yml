@@ -1,6 +1,8 @@
 micronaut:
     application:
         name: example
+    server:
+        port: 8080
     security:
         enabled: true
         endpoints:
