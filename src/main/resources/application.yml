@@ -1,5 +1,23 @@
 micronaut:
-    heartbeat:
-        enabled: false
     application:
         name: example
+    security:
+        enabled: true
+        endpoints:
+          login:
+            enabled: true
+          oauth:
+            enabled: true
+        token:
+          jwt:
+            enabled: true
+            signatures:
+              secret:
+                generator:
+                  secret: thisIsAVeryLongSecretThatShouldExceedTheMinimumLength
+endpoints:
+    info:
+        enabled: true
+        sensitive: false
+    routes:
+        sensitive: false
